@@ -71,7 +71,7 @@
           document.title = "メニュー | スライド資料";
         } else {
           // 3. パラメータがある場合 -> Remarkを実行
-          const sourceFile = '/src/' + deckName + '-dist.md';
+          const sourceFile = deckName + '-dist.md';
           
           // ファイル存在チェックはJSでは難しいため、ロード失敗時のハンドリングはRemarkに任せる
           var slideshow = remark.create({

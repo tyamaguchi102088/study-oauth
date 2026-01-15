@@ -17,7 +17,7 @@ if (!fs.existsSync(IMAGE_DIR)) {
 
 function processFile(baseName) {
   const inputFile = `/app/src/${baseName}.md`;
-  const outputFile = `/app/src/${baseName}-dist.md`;
+  const outputFile = `/app/${baseName}-dist.md`;
 
   if (!fs.existsSync(inputFile)) {
     console.warn(`⚠️  File not found: ${inputFile} (Skipping...)`);

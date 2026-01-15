@@ -4,7 +4,7 @@ class: center, middle, inverse
 
 ---
 
-# 【ゼロから学ぶ】Auth0 で体験する OAuth 2.0 入門
+# Day 1 ~ Client Credential Flow ~
 
 ---
 
@@ -58,7 +58,7 @@ layout: false
 - 「掃除の時間だけ・リビングだけ入れるカードキー」を発行する。
 - **安全：** 期限が来たら無効。権限（Scope）も限定できる。
 
-![mermaid-diagram-1](./images/diagram-1.png)
+<img src="./src/images/slides-diagram-1.png" style="max-width:100%; max-height:450px; display:block; margin:0 auto;" />
 
 ---
 
@@ -72,7 +72,7 @@ layout: false
   - **Client ID:** マシンのユーザー名
   - **Client Secret:** マシンのパスワード（絶対に公開禁止）
 
-![mermaid-diagram-2](./images/diagram-2.png)
+<img src="./src/images/slides-diagram-2.png" style="max-width:100%; max-height:450px; display:block; margin:0 auto;" />
 
 ---
 
@@ -82,7 +82,7 @@ layout: false
 2. **Client (App):** データを使いたいプログラム。
 3. **Authorization Server:** Auth0（鍵を発行する窓口）。
 
-![mermaid-diagram-3](./images/diagram-3.png)
+<img src="./src/images/slides-diagram-3.png" style="max-width:100%; max-height:450px; display:block; margin:0 auto;" />
 
 ---
 
@@ -92,7 +92,7 @@ layout: false
 - **例:** 夜間バッチ処理、バックエンド間のデータ同期。
 - **特徴:** Secret を使って直接トークンをもらう最短ルート。
 
-![mermaid-diagram-4](./images/diagram-4.png)
+<img src="./src/images/slides-diagram-4.png" style="max-width:100%; max-height:450px; display:block; margin:0 auto;" />
 
 ---
 
@@ -107,7 +107,7 @@ Auth0 ダッシュボード > Applications > APIs > **Create API**
 - **Name:** `My Todo API`
 - **Identifier:** `http://localhost:3001` (重要！)
 
-![mermaid-diagram-5](./images/diagram-5.png)
+<img src="./src/images/slides-diagram-5.png" style="max-width:100%; max-height:450px; display:block; margin:0 auto;" />
 
 ---
 
@@ -118,7 +118,7 @@ Auth0 ダッシュボード > Applications > APIs > **Create API**
 3. **Copy:** `Client ID` と `Secret` をコピー。
 4. **Run:** `m2m-client/client.js` に貼り付けて実行。
 
-![mermaid-diagram-6](./images/diagram-6.png)
+<img src="./src/images/slides-diagram-6.png" style="max-width:100%; max-height:450px; display:block; margin:0 auto;" />
 
 ---
 
@@ -165,7 +165,7 @@ API サーバーは、届いたトークンを以下の手順で検証します�
 2. **有効期限の確認:** `exp` を過ぎていないか。
 3. **対象の確認:** `aud` (Audience) が自分の識別子と一致するか。
 
-![mermaid-diagram-7](./images/diagram-7.png)
+<img src="./src/images/slides-diagram-7.png" style="max-width:100%; max-height:450px; display:block; margin:0 auto;" />
 
 ---
 
