@@ -7,7 +7,10 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "docker build -t slide-mermaid-builder . ",
+    "convert": "docker run --rm -e TARGET_FILES=\"slides\" -v \"$(pwd)/src\":/app/src slide-mermaid-builder node convert.js",
+    "dev": "npx http-server ."
   },
   "dependencies": {
     "@mermaid-js/mermaid-cli": "^11.12.0"
