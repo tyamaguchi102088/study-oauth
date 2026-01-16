@@ -178,14 +178,43 @@ docker-compose down
     - `My Todo API`を選択。
     - `Permissions` タブへ移動。
     - 以下を追加して `Add`。
+      - Permission: `read:todos`, Description: `Read access`
       - Permission: `create:todos`, Description: `Create access`
 2.  **M2M アプリへの許可:**
     - 同画面の `Machine to Machine Applications` タブへ移動。
     - 作成したアプリ (`M2M Client App`) の行にある `∨` (展開ボタン) をクリック。
-    - Permissions の `create:todos` の**両方にチェック**を入れる。
+    - Permissions の `read:todos` にのみチェックを入れる。
     - `Update` をクリックして保存。
 
-## Step 2: API Server コードの修正 (api/server.js)
+## Step 2: M2M スクリプトの修正
+
+```javascript
+// 1. Auth0からアクセストークンを取得 (Client Credentials Flow)
+const tokenResponse = await axios.post(
+  `https://${DOMAIN}/oauth/token`,
+  {
+    client_id: CLIENT_ID,
+    client_secret: CLIENT_SECRET,
+    audience: AUDIENCE,
+    grant_type: "client_credentials",
+    scope: "read:todos", // 👈 ここから以下を追加
+  },
+  {
+    headers: { "content-type": "application/json" },
+  }
+);
+
+// (...get token)
+
+// 読み取り (GET) -> 成功するはず
+console.log("Testing Read Access...");
+const getResponse = await axios.get("http://localhost:3001/todos", {
+  headers: { Authorization: `Bearer ${accessToken}` },
+});
+console.log("📦 GET Success:", getResponse.data);
+```
+
+## Step 3: API Server コードの修正 (api/server.js)
 
 requiredScopes をインポートし、POST メソッドに適用します。
 
@@ -218,7 +247,7 @@ app.get("/todos", checkJwt, (req, res) => {
 // ... (listen)
 ```
 
-## Step 3: M2M スクリプトの実行
+## Step 4: M2M スクリプトの実行
 
 別のターミナルを開き、クライアントディレクトリへ移動してスクリプトを実行します。
 
@@ -233,7 +262,7 @@ node client.js
 - レスポンスとして **`HTTP/1.1 403 Unauthorized`** が返ってきます。
 - API サーバーは、数学的に署名が一致しないことを検知し、DB 処理を行う前にリクエストを遮断しました。
 
-## Step 4: M2M スクリプトの修正（m2m-client/client.js）
+## Step 5: M2M スクリプトの修正（m2m-client/client.js）
 
 token リクエストのパラメタに `scope: "create:todos"` を追加します
 
@@ -245,7 +274,7 @@ const tokenResponse = await axios.post(
     client_secret: CLIENT_SECRET,
     audience: AUDIENCE,
     grant_type: "client_credentials",
-    scope: "create:todos", // 👈 【変更点】書き込み権限を要求する
+    scope: "read:todos create:todos", // 👈 【変更点】書き込み権限を要求する
   },
   {
     headers: { "content-type": "application/json" },
@@ -253,7 +282,7 @@ const tokenResponse = await axios.post(
 );
 ```
 
-## Step 5: M2M スクリプトの再実行
+## Step 6: M2M スクリプトの再実行
 
 別のターミナルから M2M スクリプトを再実行します。
 
