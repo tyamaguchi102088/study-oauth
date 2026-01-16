@@ -57,21 +57,10 @@ API サーバー（保護される側）を Auth0 に登録します。
 3.  **情報の入力**
     - **Name**: `M2M Client App`
     - **Application Type**: `Machine to Machine Applications` を選択。
-4.  **保存**
-    - [Create] をクリック。
-
----
-
-## Step 3: API へのアクセス許可 (Authorize)
-
-「どのアプリ」に「どの API」へのアクセスを許すかを設定します。
-
-1.  **対象 API の選択**
-    - Step 2 完了直後の画面、またはアプリ設定の [APIs] タブを開く。
-2.  **許可（Authorize）を ON にする**
-    - リストにある `My Todo API` (Identifier: http://localhost:3001) の右側にある **Authorized** スイッチを **ON** にする。
-3.  **スコープの設定**
-    - そのまま [Authorize] または [Update] をクリック。
+4.  **API の選択**
+    - `My TODO API` を選択
+5.  **保存**
+    - [Authorize] をクリック。
 
 ---
 
@@ -79,8 +68,17 @@ API サーバー（保護される側）を Auth0 に登録します。
 
 プログラムに設定するための情報をコピーします。
 
+**コピー元（Auth0 ダッシュボード）**
+
+1.  **Applications 画面へ移動**
+    - 左メニュー： [Applications] > [Applications] を選択。
+2.  **対象 API の選択**
+    - `M2M Client App` を選択し Settings タブに記載されている Domain, Client ID, Client Secret を確認
+
+**コピー先（handson ディレクトリ内）**
+
 1.  **.env.sample** を **.env** にリネームしてください
-2.  **以下の値を .env ファイルに転記する**
+2.  **Auth0 ダッシュボードに表示されている以下の値を .env ファイルに転記する**
     - **Domain** → `AUTH0_DOMAIN`
     - **Client ID** → `AUTH0_CLIENT_ID`
     - **Client Secret** → `AUTH0_CLIENT_SECRET`
@@ -176,82 +174,25 @@ docker-compose down
 
 1.  **Permissions の定義:**
     - `Applications` > `APIs` > 作成した API (`My Todo API`) を選択。
+    - `APIs` タブへ移動。
+    - `My Todo API`を選択。
     - `Permissions` タブへ移動。
     - 以下を追加して `Add`。
-      - Permission: `read:todos`, Description: `Read access`
       - Permission: `create:todos`, Description: `Create access`
 2.  **M2M アプリへの許可:**
     - 同画面の `Machine to Machine Applications` タブへ移動。
-    - 作成したアプリ (`My M2M Client` 等) の行にある `∨` (展開ボタン) をクリック。
-    - Permissions の `read:todos` と `create:todos` の**両方にチェック**を入れる。
+    - 作成したアプリ (`M2M Client App`) の行にある `∨` (展開ボタン) をクリック。
+    - Permissions の `create:todos` の**両方にチェック**を入れる。
     - `Update` をクリックして保存。
 
-## Step 2: Client コードの修正 (`m2m-client/client.js`)
-
-トークンリクエスト時に `scope` を指定し、書き込みリクエストを追加します。
-
-```javascript
-// ... (imports and env vars)
-
-async function main() {
-  try {
-    console.log("🔑 Requesting token...");
-    const tokenResponse = await axios.post(
-      `https://${DOMAIN}/oauth/token`,
-      {
-        client_id: CLIENT_ID,
-        client_secret: CLIENT_SECRET,
-        audience: AUDIENCE,
-        grant_type: "client_credentials",
-        scope: "read:todos", // 👈 【変更点】読み取り権限のみを要求する
-      },
-      {
-        headers: { "content-type": "application/json" },
-      }
-    );
-
-    const accessToken = tokenResponse.data.access_token;
-    console.log("✅ Token acquired with READ scope only!");
-
-    // 1. 読み取り (GET) -> 成功するはず
-    console.log("Testing Read Access...");
-    const getResponse = await axios.get("http://localhost:3001/todos", {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
-    console.log("📦 GET Success:", getResponse.data);
-
-    // 2. 書き込み (POST) -> 失敗するはず
-    console.log("Testing Write Access (Should fail)...");
-    try {
-      await axios.post(
-        "http://localhost:3001/todos",
-        { title: "New Task" },
-        {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        }
-      );
-    } catch (e) {
-      console.log(
-        "🛡️ POST Failed as expected:",
-        e.response.status,
-        e.response.statusText
-      );
-    }
-  } catch (error) {
-    console.error("❌ Unexpected Error:", error.message);
-  }
-}
-main();
-```
-
-## Step 3: API Server コードの修正 (api/server.js)
+## Step 2: API Server コードの修正 (api/server.js)
 
 requiredScopes をインポートし、POST メソッドに適用します。
 
 ```javascript
 // 1. requiredScopes を追加でインポート
-const { auth, requiredScopes } = require("express-oauth2-jwt-bearer");
 
+const { auth, requiredScopes } = require("express-oauth2-jwt-bearer");
 // ... (app setup)
 
 const checkJwt = auth({
@@ -276,6 +217,53 @@ app.get("/todos", checkJwt, (req, res) => {
 
 // ... (listen)
 ```
+
+## Step 3: M2M スクリプトの実行
+
+別のターミナルを開き、クライアントディレクトリへ移動してスクリプトを実行します。
+
+```bash
+cd m2m-client
+npm install
+node client.js
+```
+
+**期待される結果:**
+
+- レスポンスとして **`HTTP/1.1 403 Unauthorized`** が返ってきます。
+- API サーバーは、数学的に署名が一致しないことを検知し、DB 処理を行う前にリクエストを遮断しました。
+
+## Step 4: M2M スクリプトの修正（m2m-client/client.js）
+
+token リクエストのパラメタに `scope: "create:todos"` を追加します
+
+```javascript
+const tokenResponse = await axios.post(
+  `https://${DOMAIN}/oauth/token`,
+  {
+    client_id: CLIENT_ID,
+    client_secret: CLIENT_SECRET,
+    audience: AUDIENCE,
+    grant_type: "client_credentials",
+    scope: "create:todos", // 👈 【変更点】書き込み権限を要求する
+  },
+  {
+    headers: { "content-type": "application/json" },
+  }
+);
+```
+
+## Step 5: M2M スクリプトの再実行
+
+別のターミナルから M2M スクリプトを再実行します。
+
+```bash
+node client.js
+```
+
+**期待される結果:**
+
+- 書き込み成功のログが表示されます。
 
 ---
 
