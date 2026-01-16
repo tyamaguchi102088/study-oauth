@@ -19,7 +19,6 @@ COPY package.json ./
 RUN npm install
 
 # ソースコードをコピー
-COPY ./src ./src
 COPY ./convert.js ./
 COPY ./puppeteer-config.json ./
 

@@ -4,9 +4,9 @@ class: center, middle, inverse
 
 ---
 
-# Day 1 ~ Client Credential Flow ~
+# Client Credential Flow ~
 
----
+## Step 1: サーバー間通信の基本を学ぶ
 
 layout: false
 
@@ -156,35 +156,19 @@ sequenceDiagram
 
 ## 【ハンズオン】準備と API 定義
 
-**Step 1: アプリ起動**
-ターミナルで `docker-compose up` を実行し、コンテナを立ち上げます。
-
-**Step 2: Auth0 で API を作る**
-Auth0 ダッシュボード > Applications > APIs > **Create API**
-
-- **Name:** `My Todo API`
-- **Identifier:** `http://localhost:3001` (重要！)
-
-```mermaid
-graph TD
-    subgraph Auth0 Dashboard
-    A[Create API] --> B{設定入力}
-    B -->|Name| C[My Todo API]
-    B -->|Identifier| D[http://localhost:3001]
-    D --> E[作成完了]
-    end
-
-    style D fill:#438496,stroke:#333,stroke-width:4px
-```
+**事前準備**
+https://x.gd/1DNFn
+上記ガイドの通りに Auth 0 の設定をします。
 
 ---
 
 ## 【ハンズオン】アプリ設定と実行
 
-1. **Create App:** "Machine to Machine" を選択。
-2. **Authorize:** 作成した API へのアクセスを許可。
-3. **Copy:** `Client ID` と `Secret` をコピー。
-4. **Run:** `m2m-client/client.js` に貼り付けて実行。
+**\*実行ガイド**
+https://x.gd/xMpTT
+上記ガイドに従ってアプリを実行してみてください
+
+ハンズオン概要
 
 ```mermaid
 flowchart LR

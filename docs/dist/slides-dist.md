@@ -4,9 +4,9 @@ class: center, middle, inverse
 
 ---
 
-# Day 1 ~ Client Credential Flow ~
+# Client Credential Flow ~
 
----
+## Step 1: サーバー間通信の基本を学ぶ
 
 layout: false
 
@@ -58,7 +58,7 @@ layout: false
 - 「掃除の時間だけ・リビングだけ入れるカードキー」を発行する。
 - **安全：** 期限が来たら無効。権限（Scope）も限定できる。
 
-<img src="./src/images/slides-diagram-1.png" style="max-width:100%; max-height:450px; display:block; margin:0 auto;" />
+<img src="./dist/images/slides-diagram-1.png" style="max-width:100%; max-height:350px; display:block; margin:0 auto;" />
 
 ---
 
@@ -72,7 +72,7 @@ layout: false
   - **Client ID:** マシンのユーザー名
   - **Client Secret:** マシンのパスワード（絶対に公開禁止）
 
-<img src="./src/images/slides-diagram-2.png" style="max-width:100%; max-height:450px; display:block; margin:0 auto;" />
+<img src="./dist/images/slides-diagram-2.png" style="max-width:100%; max-height:350px; display:block; margin:0 auto;" />
 
 ---
 
@@ -82,7 +82,7 @@ layout: false
 2. **Client (App):** データを使いたいプログラム。
 3. **Authorization Server:** Auth0（鍵を発行する窓口）。
 
-<img src="./src/images/slides-diagram-3.png" style="max-width:100%; max-height:450px; display:block; margin:0 auto;" />
+<img src="./dist/images/slides-diagram-3.png" style="max-width:100%; max-height:350px; display:block; margin:0 auto;" />
 
 ---
 
@@ -92,33 +92,27 @@ layout: false
 - **例:** 夜間バッチ処理、バックエンド間のデータ同期。
 - **特徴:** Secret を使って直接トークンをもらう最短ルート。
 
-<img src="./src/images/slides-diagram-4.png" style="max-width:100%; max-height:450px; display:block; margin:0 auto;" />
+<img src="./dist/images/slides-diagram-4.png" style="max-width:100%; max-height:350px; display:block; margin:0 auto;" />
 
 ---
 
 ## 【ハンズオン】準備と API 定義
 
-**Step 1: アプリ起動**
-ターミナルで `docker-compose up` を実行し、コンテナを立ち上げます。
-
-**Step 2: Auth0 で API を作る**
-Auth0 ダッシュボード > Applications > APIs > **Create API**
-
-- **Name:** `My Todo API`
-- **Identifier:** `http://localhost:3001` (重要！)
-
-<img src="./src/images/slides-diagram-5.png" style="max-width:100%; max-height:450px; display:block; margin:0 auto;" />
+**事前準備**
+https://x.gd/1DNFn
+上記の通りに Auth 0 の設定をします。
 
 ---
 
 ## 【ハンズオン】アプリ設定と実行
 
-1. **Create App:** "Machine to Machine" を選択。
-2. **Authorize:** 作成した API へのアクセスを許可。
-3. **Copy:** `Client ID` と `Secret` をコピー。
-4. **Run:** `m2m-client/client.js` に貼り付けて実行。
+**\*実行ガイド**
+https://x.gd/xMpTT
+上記に従ってアプリを実行してみてください
 
-<img src="./src/images/slides-diagram-6.png" style="max-width:100%; max-height:450px; display:block; margin:0 auto;" />
+ハンズオン概要
+
+<img src="./dist/images/slides-diagram-5.png" style="max-width:100%; max-height:350px; display:block; margin:0 auto;" />
 
 ---
 
@@ -165,7 +159,7 @@ API サーバーは、届いたトークンを以下の手順で検証します�
 2. **有効期限の確認:** `exp` を過ぎていないか。
 3. **対象の確認:** `aud` (Audience) が自分の識別子と一致するか。
 
-<img src="./src/images/slides-diagram-7.png" style="max-width:100%; max-height:450px; display:block; margin:0 auto;" />
+<img src="./dist/images/slides-diagram-6.png" style="max-width:100%; max-height:350px; display:block; margin:0 auto;" />
 
 ---
 

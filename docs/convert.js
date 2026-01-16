@@ -4,9 +4,9 @@ const { execSync } = require("child_process");
 
 // --- 設定 ---
 // 変換したいマークダウンファイル名（拡張子なし）
-const TARGET_FILES = process.env.TARGET_FILES.split(","); 
+const TARGET_FILES = process.env.TARGET_FILES.split(",");
 
-const IMAGE_DIR = "images";
+const IMAGE_DIR = "dist/images";
 const IMAGE_FORMAT = "png";
 // ------------
 
@@ -17,7 +17,7 @@ if (!fs.existsSync(IMAGE_DIR)) {
 
 function processFile(baseName) {
   const inputFile = `/app/src/${baseName}.md`;
-  const outputFile = `/app/${baseName}-dist.md`;
+  const outputFile = `/app/dist/${baseName}-dist.md`;
 
   if (!fs.existsSync(inputFile)) {
     console.warn(`⚠️  File not found: ${inputFile} (Skipping...)`);
@@ -45,15 +45,14 @@ function processFile(baseName) {
       // 2. mermaid-cli (mmdc) を実行
       // Docker内なのでローカルのパッケージを使用。設定ファイル(-p)を指定。
       const cmd = `npx mmdc -i ${tempInputFile} -o ${outputPath} -b transparent -p puppeteer-config.json`;
-      
+
       execSync(cmd, { stdio: "inherit" });
 
       // 3. 掃除
       fs.unlinkSync(tempInputFile);
 
       // 4. HTMLタグで画像を埋め込む（サイズ調整付き）
-      return `<img src="./src/${IMAGE_DIR}/${fileName}" style="max-width:100%; max-height:450px; display:block; margin:0 auto;" />`;
-
+      return `<img src="./${IMAGE_DIR}/${fileName}" style="max-width:100%; max-height:350px; display:block; margin:0 auto;" />`;
     } catch (error) {
       console.error(`❌ Error rendering diagram #${count} in ${baseName}`);
       return match;
@@ -66,7 +65,6 @@ function processFile(baseName) {
 
 // 実行
 console.log("🚀 Starting Dockerized conversion...");
-TARGET_FILES.forEach(fileName => processFile(fileName));
+TARGET_FILES.forEach((fileName) => processFile(fileName));
 console.log("🎉 Done!");
 process.exit();
-

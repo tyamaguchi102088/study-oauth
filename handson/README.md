@@ -27,6 +27,9 @@ handson/
 
 ## Step 1: API (Resource Server) の登録
 
+> ![NOTES]
+> 事前に Auth 0 へのサインアップが必要です。
+
 API サーバー（保護される側）を Auth0 に登録します。
 
 1.  **APIs 画面へ移動**
@@ -163,6 +166,115 @@ node client.js
 
 ```bash
 docker-compose down
+```
+
+---
+
+# Scope の実装ハンズオン実行ガイド
+
+## Step 1: Auth0 Dashboard 設定
+
+1.  **Permissions の定義:**
+    - `Applications` > `APIs` > 作成した API (`My Todo API`) を選択。
+    - `Permissions` タブへ移動。
+    - 以下を追加して `Add`。
+      - Permission: `read:todos`, Description: `Read access`
+      - Permission: `create:todos`, Description: `Create access`
+2.  **M2M アプリへの許可:**
+    - 同画面の `Machine to Machine Applications` タブへ移動。
+    - 作成したアプリ (`My M2M Client` 等) の行にある `∨` (展開ボタン) をクリック。
+    - Permissions の `read:todos` と `create:todos` の**両方にチェック**を入れる。
+    - `Update` をクリックして保存。
+
+## Step 2: Client コードの修正 (`m2m-client/client.js`)
+
+トークンリクエスト時に `scope` を指定し、書き込みリクエストを追加します。
+
+```javascript
+// ... (imports and env vars)
+
+async function main() {
+  try {
+    console.log("🔑 Requesting token...");
+    const tokenResponse = await axios.post(
+      `https://${DOMAIN}/oauth/token`,
+      {
+        client_id: CLIENT_ID,
+        client_secret: CLIENT_SECRET,
+        audience: AUDIENCE,
+        grant_type: "client_credentials",
+        scope: "read:todos", // 👈 【変更点】読み取り権限のみを要求する
+      },
+      {
+        headers: { "content-type": "application/json" },
+      }
+    );
+
+    const accessToken = tokenResponse.data.access_token;
+    console.log("✅ Token acquired with READ scope only!");
+
+    // 1. 読み取り (GET) -> 成功するはず
+    console.log("Testing Read Access...");
+    const getResponse = await axios.get("http://localhost:3001/todos", {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    console.log("📦 GET Success:", getResponse.data);
+
+    // 2. 書き込み (POST) -> 失敗するはず
+    console.log("Testing Write Access (Should fail)...");
+    try {
+      await axios.post(
+        "http://localhost:3001/todos",
+        { title: "New Task" },
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
+    } catch (e) {
+      console.log(
+        "🛡️ POST Failed as expected:",
+        e.response.status,
+        e.response.statusText
+      );
+    }
+  } catch (error) {
+    console.error("❌ Unexpected Error:", error.message);
+  }
+}
+main();
+```
+
+## Step 3: API Server コードの修正 (api/server.js)
+
+requiredScopes をインポートし、POST メソッドに適用します。
+
+```javascript
+// 1. requiredScopes を追加でインポート
+const { auth, requiredScopes } = require("express-oauth2-jwt-bearer");
+
+// ... (app setup)
+
+const checkJwt = auth({
+  audience: process.env.AUTH0_AUDIENCE,
+  issuerBaseURL: `https://${process.env.AUTH0_DOMAIN}/`,
+});
+
+// 2. スコープチェック用ミドルウェアを定義
+const checkCreateScope = requiredScopes("create:todos");
+
+// 3. POSTメソッドに checkCreateScope を追加
+//    checkJwt (認証) -> checkCreateScope (認可) の順で実行されます
+app.post("/todos", checkJwt, checkCreateScope, (req, res) => {
+  console.log("📝 Creating a todo...");
+  res.json({ message: "Todo created!" });
+});
+
+// GETメソッドはScopeチェックなし（または read:todos を付けてもOK）
+app.get("/todos", checkJwt, (req, res) => {
+  res.json([{ id: 1, title: "Learn OAuth Scope" }]);
+});
+
+// ... (listen)
 ```
 
 ---

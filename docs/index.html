@@ -3,81 +3,210 @@
   <head>
     <title>スライド資料</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <style type="text/css">
-      @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Ubuntu+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
 
-      body { font-family: "arial", sans-serif; margin: 0; padding: 0; }
-      
+    <style type="text/css">
+      body {
+        font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f7f9;
+        color: #333;
+      }
+
       /* --- メニュー画面用のスタイル --- */
       #menu-screen {
-        display: none; /* デフォルトは非表示 */
-        height: 100vh;
-        background-color: #f0f4f8;
+        display: none;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
         flex-direction: column;
         justify-content: center;
         align-items: center;
+        padding: 2rem;
+        box-sizing: border-box;
       }
-      #menu-screen h1 { color: #006cb4; font-size: 2.5rem; margin-bottom: 2rem; }
-      .menu-list { list-style: none; padding: 0; }
-      .menu-list li { margin: 1rem 0; }
+      #menu-screen h1 {
+        color: #2c3e50;
+        font-size: 2.5rem;
+        margin-bottom: 3rem;
+        text-align: center;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        font-weight: 800;
+        letter-spacing: -0.05rem;
+      }
+      .menu-list {
+        list-style: none;
+        padding: 0;
+        width: 100%;
+        max-width: 1000px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+      }
+      .menu-list li {
+        margin: 0;
+      }
+
       .menu-button {
-        display: inline-block;
-        padding: 1rem 3rem;
-        background-color: #006cb4;
-        color: white;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 180px;
+        padding: 2rem;
+        background-color: #ffffff;
+        color: #2c3e50;
         text-decoration: none;
-        font-size: 1.5rem;
-        border-radius: 8px;
-        transition: background 0.3s;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        font-size: 1.25rem;
+        font-weight: bold;
+        border-radius: 16px;
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05),
+          0 6px 6px rgba(0, 0, 0, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        position: relative;
+        overflow: hidden;
       }
-      .menu-button:hover { background-color: #005086; transform: translateY(-2px); }
+      .menu-button::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 6px;
+        background: linear-gradient(90deg, #eb5424 0%, #ea3323 100%);
+        transition: height 0.3s ease;
+      }
+      .menu-button:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 14px 28px rgba(0, 0, 0, 0.1),
+          0 10px 10px rgba(0, 0, 0, 0.08);
+        color: #ea3323;
+      }
+      .menu-button:hover::before {
+        height: 8px;
+      }
+      .card-desc {
+        font-size: 0.9rem;
+        color: #7f8c8d;
+        margin-top: 0.5rem;
+        font-weight: normal;
+      }
+
+      /* --- 戻るボタンのスタイル --- */
+      #back-button {
+        display: none; /* デフォルト非表示 */
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 9999; /* スライドより前面に */
+        padding: 0.5rem 1rem;
+        background-color: rgba(255, 255, 255, 0.9);
+        color: #2c3e50;
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: bold;
+        border-radius: 50px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        border: 1px solid #ddd;
+        transition: all 0.2s ease;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      #back-button:hover {
+        background-color: #fff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        transform: translateY(-1px);
+        color: #ea3323;
+      }
+      /* アイコン風の矢印 */
+      #back-button::before {
+        content: "←";
+        font-weight: bold;
+      }
+
+      /* --- 印刷時は戻るボタンを消す --- */
+      @media print {
+        #back-button {
+          display: none !important;
+        }
+      }
 
       /* --- スライド用のスタイル --- */
-      /* 画像サイズ制御（前回の内容） */
       .remark-slide-content img {
         max-width: 100%;
-        max-height: 450px;
+        max-height: 350px;
         display: block;
         margin: 0 auto;
         object-fit: contain;
       }
-      /* Remarkの共通スタイルは省略可能ですが、既存のまま残します */
-      .remark-code, .remark-inline-code { font-family: "Ubuntu Mono"; }
+      .remark-code,
+      .remark-inline-code {
+        font-family: "Ubuntu Mono", monospace;
+      }
     </style>
   </head>
   <body>
+    <a id="back-button" href="?">Menu</a>
 
     <div id="menu-screen">
       <h1>【ゼロから学ぶ】Auth0 で体験する OAuth 2.0 入門</h1>
       <ul class="menu-list">
-        <li><a href="?deck=slides" class="menu-button">Client Credential Flow</a></li>
+        <li>
+          <a href="?deck=slides" class="menu-button">
+            Client Credentials Flow
+            <span class="card-desc">Step 1: サーバー間通信の基本を学ぶ</span>
+          </a>
+        </li>
+        <li>
+          <a href="?deck=slides-scope" class="menu-button">
+            Scope
+            <span class="card-desc">Step 2: Scope（スコープ）で権限を操る</span>
+          </a>
+        </li>
+        <li>
+          <a
+            href="#"
+            class="menu-button"
+            style="pointer-events: none; opacity: 0.6; filter: grayscale(100%)"
+          >
+            Authorization Code Flow
+            <span class="card-desc">(Coming Soon)</span>
+          </a>
+        </li>
       </ul>
     </div>
 
     <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
-    
-    <script type="text/javascript">
-      document.addEventListener("DOMContentLoaded", function() {
-        // 1. URLパラメータを取得
-        const params = new URLSearchParams(window.location.search);
-        const deckName = params.get('deck'); // 'day1' or 'day2' or null
 
-        const menuScreen = document.getElementById('menu-screen');
+    <script type="text/javascript">
+      document.addEventListener("DOMContentLoaded", function () {
+        const params = new URLSearchParams(window.location.search);
+        const deckName = params.get("deck");
+
+        const menuScreen = document.getElementById("menu-screen");
+        const backButton = document.getElementById("back-button");
 
         if (!deckName) {
-          // 2. パラメータがない場合 -> メニューを表示
-          menuScreen.style.display = 'flex';
-          document.title = "メニュー | スライド資料";
+          // --- メニュー表示モード ---
+          menuScreen.style.display = "flex";
+          document.title = "【ゼロから学ぶ】Auth0 で体験する OAuth 2.0 入門";
+          // 戻るボタンは隠したまま
         } else {
-          // 3. パラメータがある場合 -> Remarkを実行
-          const sourceFile = deckName + '-dist.md';
-          
-          // ファイル存在チェックはJSでは難しいため、ロード失敗時のハンドリングはRemarkに任せる
+          // --- スライド表示モード ---
+
+          // 戻るボタンを表示する
+          backButton.style.display = "flex";
+
+          const sourceFile = `dist/${deckName}-dist.md`;
+
           var slideshow = remark.create({
             sourceUrl: sourceFile,
             highlightStyle: "monokai",
-            highlightLines: true
+            highlightLines: true,
           });
         }
       });
