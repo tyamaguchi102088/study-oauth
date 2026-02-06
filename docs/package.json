@@ -10,7 +10,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "docker build -t slide-mermaid-builder .",
     "build-no-cache": "docker build -t slide-mermaid-builder . --no-cache",
-    "convert": "docker run --rm -e TARGET_FILES=\"slides,slides-scope\" -v \"$(pwd)/src\":/app/src -v \"$(pwd)/dist\":/app/dist slide-mermaid-builder node convert.js",
+    "convert": "docker run --rm -e TARGET_FILES=\"slides,slides-scope,slides-authorization-code-flow\" -v \"$(pwd)/src\":/app/src -v \"$(pwd)/dist\":/app/dist slide-mermaid-builder node convert.js",
     "dev": "npx http-server ."
   },
   "dependencies": {

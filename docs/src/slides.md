@@ -1,9 +1,3 @@
-name: inverse
-layout: true
-class: center, middle, inverse
-
----
-
 # Client Credential Flow ~
 
 ## Step 1: サーバー間通信の基本を学ぶ
@@ -165,7 +159,7 @@ https://x.gd/1DNFn
 ## 【ハンズオン】アプリ設定と実行
 
 **\*実行ガイド**
-https://x.gd/xMpTT
+[ハンズオン実行ガイド](https://github.com/tyamaguchi102088/study-oauth/tree/main/handson/client-credential-flow/README.md)
 上記ガイドに従ってアプリを実行してみてください
 
 ハンズオン概要

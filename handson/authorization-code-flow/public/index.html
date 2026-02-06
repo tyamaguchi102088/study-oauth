@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>PKCE Handson</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        padding: 20px;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+      button {
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        margin-right: 10px;
+      }
+      .hidden {
+        display: none;
+      }
+      #logs {
+        background: #f4f4f4;
+        padding: 10px;
+        border: 1px solid #ddd;
+        white-space: pre-wrap;
+        margin-top: 20px;
+        height: 300px;
+        overflow-y: scroll;
+      }
+      code {
+        color: #d63384;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Authorization Code Flow with PKCE</h1>
+    <p>DevToolsのNetworkタブを開いて、動きを確認してください。</p>
+
+    <div id="login-view">
+      <button id="btn-login">Login with Auth0 (PKCE)</button>
+    </div>
+
+    <div id="profile-view" class="hidden">
+      <h3>Welcome!</h3>
+      <p>
+        Access Token: <br /><textarea
+          id="access-token"
+          rows="3"
+          style="width: 100%"
+        ></textarea>
+      </p>
+      <button id="btn-api">Call Protected API</button>
+      <button id="btn-logout">Logout</button>
+    </div>
+
+    <h3>Activity Logs:</h3>
+    <div id="logs"></div>
+
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const { auth } = require("express-oauth2-jwt-bearer");
+const { auth, requiredScopes } = require("express-oauth2-jwt-bearer");
 const { Pool } = require("pg");
 require("dotenv").config();
 
@@ -24,6 +24,8 @@ const checkJwt = auth({
   issuerBaseURL: `https://${process.env.AUTH0_DOMAIN}/`,
 });
 
+const checkCreateScope = requiredScopes("create:todos");
+
 // 公開エンドポイント (動作確認用)
 app.get("/", (req, res) => {
   res.send("API Server is running!");
@@ -45,7 +47,7 @@ app.get("/todos", async (req, res) => {
 
 // 保護されたエンドポイント: Todo追加 (要アクセストークン)
 // ここがハンズオンの肝です。
-app.post("/todos", checkJwt, async (req, res) => {
+app.post("/todos", checkJwt, checkCreateScope, async (req, res) => {
   const { title } = req.body;
   if (!title) return res.status(400).send("Title is required");
 

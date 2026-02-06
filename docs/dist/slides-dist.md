@@ -1,9 +1,3 @@
-name: inverse
-layout: true
-class: center, middle, inverse
-
----
-
 # Client Credential Flow ~
 
 ## Step 1: サーバー間通信の基本を学ぶ
@@ -100,15 +94,15 @@ layout: false
 
 **事前準備**
 https://x.gd/1DNFn
-上記の通りに Auth 0 の設定をします。
+上記ガイドの通りに Auth 0 の設定をします。
 
 ---
 
 ## 【ハンズオン】アプリ設定と実行
 
 **\*実行ガイド**
-https://x.gd/xMpTT
-上記に従ってアプリを実行してみてください
+[ハンズオン実行ガイド](https://github.com/tyamaguchi102088/study-oauth/tree/main/handson/client-credential-flow/README.md)
+上記ガイドに従ってアプリを実行してみてください
 
 ハンズオン概要
 

@@ -186,7 +186,7 @@ docker-compose down
     - Permissions の `read:todos` にのみチェックを入れる。
     - `Update` をクリックして保存。
 
-## Step 2: M2M スクリプトの修正
+## Step 2: M2M スクリプトの修正（client.js）
 
 ```javascript
 // 1. Auth0からアクセストークンを取得 (Client Credentials Flow)

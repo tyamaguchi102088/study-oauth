@@ -1,9 +1,3 @@
-name: inverse
-layout: true
-class: center, middle, inverse
-
----
-
 # Scope
 
 ## Step 2: Scope（スコープ）で権限を操る
@@ -129,7 +123,7 @@ sequenceDiagram
 
 ## 【ハンズオン】アプリ設定と実行
 
-https://x.gd/6ijsw
+[ハンズオン実行ガイド](https://github.com/tyamaguchi102088/study-oauth/tree/main/handson/client-credential-flow/README.md)
 上記ガイドに従ってアプリを実行してみてください
 
 ---

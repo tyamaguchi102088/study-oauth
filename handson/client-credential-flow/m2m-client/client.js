@@ -21,6 +21,7 @@ async function main() {
         client_secret: CLIENT_SECRET,
         audience: AUDIENCE,
         grant_type: "client_credentials",
+        scope: "read:todos create:todos", // 👈 ここから以下を追加
       },
       {
         headers: { "content-type": "application/json" },
@@ -38,6 +39,13 @@ async function main() {
     console.log("✅ Access Token acquired!");
     console.log("Token:", accessToken); // デモなので全て表示
     // console.log("Token:", accessToken.substring(0, 20) + "..."); // 先頭だけ表示
+
+    // 読み取り (GET) -> 成功するはず
+    console.log("Testing Read Access...");
+    const getResponse = await axios.get("http://localhost:3001/todos", {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    console.log("📦 GET Success:", getResponse.data);
 
     // 2. 取得したトークンを使ってAPIを叩く
     console.log("\n--- 2. API Request (Create Todo) ---");
